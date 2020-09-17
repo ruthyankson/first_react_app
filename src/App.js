@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
+import classes from './App.css';
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
 
 class App extends Component {
   state = {
@@ -58,51 +59,54 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-      backgroundColor: 'green',
-      font: 'white',
-      border: '1px solid pink',
-      padding: '8px',
-      cursor: 'pointer'
-    };
+    // const style = {
+    //   backgroundColor: 'green',
+    //   font: 'white',
+    //   border: '1px solid pink',
+    //   padding: '8px',
+    //   cursor: 'pointer'
+    // };
 
     let persons = null;
+    let button_class = '';
 
     if (this.state.showPersons) {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return <Person 
-              click={() => this.deletePersonsHandler(index)}
-              name={person.name}
-              age={person.age}
-              key={person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)} />
+            return <ErrorBoundary 
+              key={person.id}>
+                <Person 
+                  click={() => this.deletePersonsHandler(index)}
+                  name={person.name}
+                  age={person.age}
+                  changed={(event) => this.nameChangedHandler(event, person.id)} />
+              </ErrorBoundary>
           })}
           
         </div> 
 
       );
-
-      style.backgroundColor = 'red';
+      button_class = classes.red;
+      // style.backgroundColor = 'red';
     }
 
     // let classes = ['red', 'bold'].join(' ');
-    let classes = [];
+    let assigned_classes = [];
     if (this.state.persons.length <= 2) {
-      classes.push('red'); // classes = ['red']
+      assigned_classes.push(classes.red); // classes = ['red']
     }
     if (this.state.persons.length <= 1) {
-      classes.push('bold'); // classes = ['red', 'bold']
+      assigned_classes.push(classes.bold); // classes = ['red', 'bold']
     }
     return (
-        <div className="App">
+        <div className={classes.App}>
           <h1>Hi, I'm a React app</h1>
 
-          <p className={classes.join(' ')}>This is really lovely!!!!</p>
-
+          <p className={assigned_classes.join(' ')}>This is really lovely!!!!</p>
+        
           <button 
-            style={style}
+            className={button_class}
             onClick={this.togglePersonsHandler}>
               Toggle Persons
           </button>
