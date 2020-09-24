@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import classes from './App.css'; 
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
+import withClass from '../hoc/WithClass';
+import Auxiliary from '../hoc/Auxiliary';
 
 
 class App extends Component {
@@ -19,7 +21,8 @@ class App extends Component {
     ],
     otherState: 'some other value',
     showPersons: false,
-    showCockpit: true
+    showCockpit: true,
+    changedCounter: 0
   };
 
   static getDerivedStateFromProps(props, state)  {
@@ -75,8 +78,13 @@ class App extends Component {
     const _persons_ = [...this.state.persons];
     _persons_[_person_id] = _person;
 
-    this.setState({persons: _persons_});
-  }
+    this.setState((prevState, props) => {
+      return {
+        persons: _persons_, 
+        changeCounter: this.prevState.changedCounter + 1
+      };
+    });
+  }; // Important for updating states
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
@@ -107,7 +115,7 @@ class App extends Component {
 
     
     return (
-        <div className={classes.App}>
+        <Auxiliary className={classes.App}>
           <button 
           onClick={() => {
             this.setState({ showCockpit: false });
@@ -121,11 +129,11 @@ class App extends Component {
           clicked = {this.togglePersonsHandler}
            />) : null}
           {persons}
-        </div>     
+        </Auxiliary>     
       
     );
     // return React.createElement('div', null, React.createElement('h1', null, 'Welllll, here we are...!!!'));
   }
 }
 
-export default App; //higer order component with extra syntax  et al
+export default withClass(App, classes.App); //higer order component with extra syntax  et al
